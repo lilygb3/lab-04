@@ -280,25 +280,58 @@ lq %>%
 dn <- dn %>%
   mutate(establishment = "Denny's")
 lq <- lq %>%
-  mutate(establishment = "La Quinta")
-#add identifier variable called "establishment" and set value to Denny's and La Quinta for dn and lq dfs
+  mutate(establishment = "La Quinta") #add identifier variable called "establishment" and set value to Denny's and La Quinta for dn and lq dfs
 ```
 
 ``` r
 dn_lq <- bind_rows(dn, lq) #bind dn and lq dfs
 ```
 
+It appears that Mitch’s joke holds about half the time for North
+Carolina. Almost all of the La Quinta’s are located next to a Denny’s,
+but there are a few Denny’s without a La Quinta nearby.
+
 ``` r
-ggplot(dn_lq, mapping = aes(
-  x = longitude,
-  y = latitude,
-  color = establishment
-)) +
-  geom_point()
+dn_lq %>% 
+  filter(state == "NC") %>% 
+  ggplot(dn_lq, mapping = aes(
+    x = longitude,
+    y = latitude,
+    color = establishment
+  )) +
+    geom_point(alpha = .6) + 
+  labs(title = "Denny's and La Quinta Locations in North Carolina",
+       x = "Longtitude",
+       y = "Latitude", 
+       fill = "Establishment"
+  )
 ```
 
-![](lab-04_files/figure-gfm/plot_establishments-1.png)<!-- -->
+![](lab-04_files/figure-gfm/filter_plot_by_NC-1.png)<!-- -->
 
 ### Exercise 12
 
+Mitch’s joke appears to hold more true for Texas compared to North
+Carolina.
+
+``` r
+dn_lq %>% 
+  filter(state == "TX") %>% 
+  ggplot(dn_lq, mapping = aes(
+    x = longitude,
+    y = latitude,
+    color = establishment
+  )) +
+    geom_point(alpha = .4) + 
+  labs(title = "Denny's and La Quinta Locations in Texas",
+       x = "Longtitude",
+       y = "Latitude", 
+       fill = "Establishment"
+  )
+```
+
+![](lab-04_files/figure-gfm/filter_plot_by_TX-1.png)<!-- -->
+
 ### Exercise 13
+
+(I want to come back to this if I have time next week)
