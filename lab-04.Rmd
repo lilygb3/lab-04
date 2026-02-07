@@ -102,26 +102,54 @@ lq %>% count(state, sort = TRUE)
 lq %>% count(state) %>% arrange(n)
 ```
 
-```{r dn_join_states}
-states <- dn %>%
-  count(state) %>% #count how many observations are in each state
-  inner_join(states, by = c("state" = "abbreviation")) #join states df to count df, specify that the state variable from dn df should be matched by the abbreviation variable from states df
-```
-
 ### Exercise 10
 
+The District of Colombia, Rhode Island, and California have the most Denny's locations per thousand square miles. 
 
+```{r dn_join_states}
+dn %>%
+  count(state) %>% #count how many observations are in each state
+  inner_join(states, by = c("state" = "abbreviation")) %>% #join states df to count df, specify that the state variable from dn df should be matched by the abbreviation variable from states df
+  mutate(dn_density = (n / area) * 1000) %>% 
+  arrange(desc(dn_density))
+```
+
+Rhode Island, Florida, and Connecticut have the most La Quinta locations per thousand square miles. 
+
+```{r lq_join_states}
+lq %>%
+  count(state) %>%
+  inner_join(states, by = c("state" = "abbreviation")) %>%
+  mutate(lq_density = (n / area) * 1000) %>% 
+  arrange(desc(lq_density))
+```
 
 ### Exercise 11
 
+```{r identifier_var}
+dn <- dn %>%
+  mutate(establishment = "Denny's")
+lq <- lq %>%
+  mutate(establishment = "La Quinta")
+#add identifier variable called "establishment" and set value to Denny's and La Quinta for dn and lq dfs
+```
 
+```{r bind_dn_and_lq}
+dn_lq <- bind_rows(dn, lq) #bind dn and lq dfs
+```
+
+```{r plot_establishments}
+ggplot(dn_lq, mapping = aes(
+  x = longitude,
+  y = latitude,
+  color = establishment
+)) +
+  geom_point()
+```
 
 
 
 ### Exercise 12
-
-
-
 
 
 ### Exercise 13

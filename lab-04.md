@@ -220,15 +220,84 @@ lq %>% count(state) %>% arrange(n)
     ## 10 MI        4
     ## # ℹ 38 more rows
 
-``` r
-states <- dn %>%
-  count(state) %>% #count how many observations are in each state
-  inner_join(states, by = c("state" = "abbreviation")) #join states df to count df, specify that the state variable from dn df should be matched by the abbreviation variable from states df
-```
-
 ### Exercise 10
 
+The District of Colombia, Rhode Island, and California have the most
+Denny’s locations per thousand square miles.
+
+``` r
+dn %>%
+  count(state) %>% #count how many observations are in each state
+  inner_join(states, by = c("state" = "abbreviation")) %>% #join states df to count df, specify that the state variable from dn df should be matched by the abbreviation variable from states df
+  mutate(dn_density = (n / area) * 1000) %>% 
+  arrange(desc(dn_density))
+```
+
+    ## # A tibble: 51 × 5
+    ##    state     n name                     area dn_density
+    ##    <chr> <int> <chr>                   <dbl>      <dbl>
+    ##  1 DC        2 District of Columbia     68.3     29.3  
+    ##  2 RI        5 Rhode Island           1545.       3.24 
+    ##  3 CA      403 California           163695.       2.46 
+    ##  4 CT       12 Connecticut            5543.       2.16 
+    ##  5 FL      140 Florida               65758.       2.13 
+    ##  6 MD       26 Maryland              12406.       2.10 
+    ##  7 NJ       10 New Jersey             8723.       1.15 
+    ##  8 NY       56 New York              54555.       1.03 
+    ##  9 IN       37 Indiana               36420.       1.02 
+    ## 10 OH       44 Ohio                  44826.       0.982
+    ## # ℹ 41 more rows
+
+Rhode Island, Florida, and Connecticut have the most La Quinta locations
+per thousand square miles.
+
+``` r
+lq %>%
+  count(state) %>%
+  inner_join(states, by = c("state" = "abbreviation")) %>%
+  mutate(lq_density = (n / area) * 1000) %>% 
+  arrange(desc(lq_density))
+```
+
+    ## # A tibble: 48 × 5
+    ##    state     n name             area lq_density
+    ##    <chr> <int> <chr>           <dbl>      <dbl>
+    ##  1 RI        2 Rhode Island    1545.      1.29 
+    ##  2 FL       74 Florida        65758.      1.13 
+    ##  3 CT        6 Connecticut     5543.      1.08 
+    ##  4 MD       13 Maryland       12406.      1.05 
+    ##  5 TX      237 Texas         268596.      0.882
+    ##  6 TN       30 Tennessee      42144.      0.712
+    ##  7 GA       41 Georgia        59425.      0.690
+    ##  8 NJ        5 New Jersey      8723.      0.573
+    ##  9 MA        6 Massachusetts  10554.      0.568
+    ## 10 LA       28 Louisiana      52378.      0.535
+    ## # ℹ 38 more rows
+
 ### Exercise 11
+
+``` r
+dn <- dn %>%
+  mutate(establishment = "Denny's")
+lq <- lq %>%
+  mutate(establishment = "La Quinta")
+#add identifier variable called "establishment" and set value to Denny's and La Quinta for dn and lq dfs
+```
+
+``` r
+dn_lq <- bind_rows(dn, lq) #bind dn and lq dfs
+```
+
+``` r
+ggplot(dn_lq, mapping = aes(
+  x = longitude,
+  y = latitude,
+  color = establishment
+)) +
+  geom_point()
+```
+
+![](lab-04_files/figure-gfm/plot_establishments-1.png)<!-- -->
 
 ### Exercise 12
 
