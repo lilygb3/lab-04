@@ -54,9 +54,9 @@ ncol(lq)
 
 ### Exercise 3
 
-There are La Quinta hotels outside of the US: in New Zealand, Georgia,
-Turkey, United Arab Emirates, Colombia, and Ecuador. All of the Denny’s
-are located in the US.
+There are La Quinta hotels outside of the US: in Asia, New Zealand,
+Georgia, Turkey, United Arab Emirates, Colombia, and Ecuador. All of the
+Denny’s are located in the US.
 
 ### Exercise 4
 
@@ -83,28 +83,153 @@ dn %>%
 ### Exercise 6
 
 ``` r
-dn %>%
+dn <- dn %>%
   mutate(country = "United States") #add a country variable to Denny's dataset and set all observations to "United States"
 ```
 
-    ## # A tibble: 1,643 × 7
-    ##    address                        city    state zip   longitude latitude country
-    ##    <chr>                          <chr>   <chr> <chr>     <dbl>    <dbl> <chr>  
-    ##  1 2900 Denali                    Anchor… AK    99503    -150.      61.2 United…
-    ##  2 3850 Debarr Road               Anchor… AK    99508    -150.      61.2 United…
-    ##  3 1929 Airport Way               Fairba… AK    99701    -148.      64.8 United…
-    ##  4 230 Connector Dr               Auburn  AL    36849     -85.5     32.6 United…
-    ##  5 224 Daniel Payne Drive N       Birmin… AL    35207     -86.8     33.6 United…
-    ##  6 900 16th St S, Commons on Gree Birmin… AL    35294     -86.8     33.5 United…
-    ##  7 5931 Alabama Highway, #157     Cullman AL    35056     -86.9     34.2 United…
-    ##  8 2190 Ross Clark Circle         Dothan  AL    36301     -85.4     31.2 United…
-    ##  9 900 Tyson Rd                   Hope H… AL    36043     -86.4     32.2 United…
-    ## 10 4874 University Drive          Huntsv… AL    35816     -86.7     34.7 United…
-    ## # ℹ 1,633 more rows
-
 ### Exercise 7
 
-There are La Quinta locations in New Zealand, Georgia, Turkey, United
-Arab Emirates, Colombia, and Ecuador.
+There are La Quinta locations in Asia, New Zealand, Georgia, Turkey,
+United Arab Emirates, Colombia, and Ecuador.
+
+``` r
+lq %>%
+  filter(!(state %in% states$abbreviation)) #filter for states that are not in states$abbreviation
+```
+
+    ## # A tibble: 14 × 6
+    ##    address                                  city  state zip   longitude latitude
+    ##    <chr>                                    <chr> <chr> <chr>     <dbl>    <dbl>
+    ##  1 Carretera Panamericana Sur KM 12         "\nA… AG    20345    -102.     21.8 
+    ##  2 Av. Tulum Mza. 14 S.M. 4 Lote 2          "\nC… QR    77500     -86.8    21.2 
+    ##  3 Ejercito Nacional 8211                   "Col… CH    32528    -106.     31.7 
+    ##  4 Blvd. Aeropuerto 4001                    "Par… NL    66600    -100.     25.8 
+    ##  5 Carrera 38 # 26-13 Avenida las Palmas c… "\nM… ANT   0500…     -75.6     6.22
+    ##  6 AV. PINO SUAREZ No. 1001                 "Col… NL    64000    -100.     25.7 
+    ##  7 Av. Fidel Velazquez #3000 Col. Central   "\nM… NL    64190    -100.     25.7 
+    ##  8 63 King Street East                      "\nO… ON    L1H1…     -78.9    43.9 
+    ##  9 Calle Las Torres-1 Colonia Reforma       "\nP… VE    93210     -97.4    20.6 
+    ## 10 Blvd. Audi N. 3 Ciudad Modelo            "\nS… PU    75010     -97.8    19.2 
+    ## 11 Ave. Zeta del Cochero No 407             "Col… PU    72810     -98.2    19.0 
+    ## 12 Av. Benito Juarez 1230 B (Carretera 57)… "\nS… SL    78399    -101.     22.1 
+    ## 13 Blvd. Fuerza Armadas                     "con… FM    11101     -87.2    14.1 
+    ## 14 8640 Alexandra Rd                        "\nR… BC    V6X1…    -123.     49.2
 
 ### Exercise 8
+
+``` r
+lq <- lq %>%
+  mutate(country = case_when(
+    state %in% state.abb ~ "United States",
+    state %in% c("ON", "BC") ~ "Canada",
+    state == "ANT" ~ "Colombia",
+    state %in% c("AG", "QR", "CH", "NL", "VE", "PU", "SL") ~ "Mexico"
+  )) #add a new country variable based on state abbreviations
+```
+
+``` r
+lq <- lq %>%
+  filter(country == "United States")
+```
+
+### Exercise 9
+
+The state with the highest number of Denny’s locations is California,
+with 403. It is surprising that Texas (the second highest) only has 200.
+The state with the least amount of Denny’s is Delaware, with only 1.
+
+``` r
+dn %>% count(state, sort = TRUE) #count frequency of states, sort in descending order
+```
+
+    ## # A tibble: 51 × 2
+    ##    state     n
+    ##    <chr> <int>
+    ##  1 CA      403
+    ##  2 TX      200
+    ##  3 FL      140
+    ##  4 AZ       83
+    ##  5 IL       56
+    ##  6 NY       56
+    ##  7 WA       49
+    ##  8 OH       44
+    ##  9 MO       42
+    ## 10 PA       40
+    ## # ℹ 41 more rows
+
+``` r
+dn %>% count(state) %>% arrange(n) #sort in ascending order
+```
+
+    ## # A tibble: 51 × 2
+    ##    state     n
+    ##    <chr> <int>
+    ##  1 DE        1
+    ##  2 DC        2
+    ##  3 VT        2
+    ##  4 AK        3
+    ##  5 IA        3
+    ##  6 NH        3
+    ##  7 SD        3
+    ##  8 WV        3
+    ##  9 LA        4
+    ## 10 MT        4
+    ## # ℹ 41 more rows
+
+The state with the highest number of La Quinta locations is Texas, with
+237. Maine has the least, with only 1. I think this makes more sense
+because of how big Texas is. Overall, it makes sense that Texas has both
+a very high number of Denny’s and La Quinta’s, given the point of the
+lab.
+
+``` r
+lq %>% count(state, sort = TRUE)
+```
+
+    ## # A tibble: 48 × 2
+    ##    state     n
+    ##    <chr> <int>
+    ##  1 TX      237
+    ##  2 FL       74
+    ##  3 CA       56
+    ##  4 GA       41
+    ##  5 TN       30
+    ##  6 OK       29
+    ##  7 LA       28
+    ##  8 CO       27
+    ##  9 NM       19
+    ## 10 NY       19
+    ## # ℹ 38 more rows
+
+``` r
+lq %>% count(state) %>% arrange(n)
+```
+
+    ## # A tibble: 48 × 2
+    ##    state     n
+    ##    <chr> <int>
+    ##  1 ME        1
+    ##  2 AK        2
+    ##  3 NH        2
+    ##  4 RI        2
+    ##  5 SD        2
+    ##  6 VT        2
+    ##  7 WV        3
+    ##  8 WY        3
+    ##  9 IA        4
+    ## 10 MI        4
+    ## # ℹ 38 more rows
+
+``` r
+states <- dn %>%
+  count(state) %>% #count how many observations are in each state
+  inner_join(states, by = c("state" = "abbreviation")) #join states df to count df, specify that the state variable from dn df should be matched by the abbreviation variable from states df
+```
+
+### Exercise 10
+
+### Exercise 11
+
+### Exercise 12
+
+### Exercise 13

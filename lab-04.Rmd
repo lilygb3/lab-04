@@ -38,7 +38,7 @@ ncol(lq)
 
 ### Exercise 3
 
-There are La Quinta hotels outside of the US: in New Zealand, Georgia, Turkey, United Arab Emirates, Colombia, and Ecuador. All of the Denny's are located in the US. 
+There are La Quinta hotels outside of the US: in Asia, New Zealand, Georgia, Turkey, United Arab Emirates, Colombia, and Ecuador. All of the Denny's are located in the US. 
 
 ### Exercise 4
 
@@ -48,42 +48,83 @@ One possibility is to filter by longitude and latitude, which would require find
 
 There are 0 Denny's locations outside the US. 
 
-```{r dennys_us}
+```{r dennys_outside_us}
 dn %>%
   filter(!(state %in% states$abbreviation)) #filter for states that are not in states$abbreviation
 ```
 
 ### Exercise 6
 
-```{r new_country_var}
-dn %>%
+```{r dn_new_country_var}
+dn <- dn %>%
   mutate(country = "United States") #add a country variable to Denny's dataset and set all observations to "United States"
 ```
 
 ### Exercise 7
 
-There are La Quinta locations in New Zealand, Georgia, Turkey, United Arab Emirates, Colombia, and Ecuador. 
+There are La Quinta locations in Asia, New Zealand, Georgia, Turkey, United Arab Emirates, Colombia, and Ecuador. 
+
+```{r lq_outside_us}
+lq %>%
+  filter(!(state %in% states$abbreviation)) #filter for states that are not in states$abbreviation
+```
 
 ### Exercise 8
 
+```{r lq_new_country_var}
+lq <- lq %>%
+  mutate(country = case_when(
+    state %in% state.abb ~ "United States",
+    state %in% c("ON", "BC") ~ "Canada",
+    state == "ANT" ~ "Colombia",
+    state %in% c("AG", "QR", "CH", "NL", "VE", "PU", "SL") ~ "Mexico"
+  )) #add a new country variable based on state abbreviations
+```
+
+```{r filter_lq_us}
+lq <- lq %>%
+  filter(country == "United States")
+```
+
+### Exercise 9
+
+The state with the highest number of Denny's locations is California, with 403. It is surprising that Texas (the second highest) only has 200. The state with the least amount of Denny's is Delaware, with only 1. 
+
+```{r dn_count}
+dn %>% count(state, sort = TRUE) #count frequency of states, sort in descending order
+dn %>% count(state) %>% arrange(n) #sort in ascending order
+```
+
+The state with the highest number of La Quinta locations is Texas, with 237. Maine has the least, with only 1. I think this makes more sense because of how big Texas is. Overall, it makes sense that Texas has both a very high number of Denny's and La Quinta's, given the point of the lab.
+
+```{r lq_count}
+lq %>% count(state, sort = TRUE)
+lq %>% count(state) %>% arrange(n)
+```
+
+```{r dn_join_states}
+states <- dn %>%
+  count(state) %>% #count how many observations are in each state
+  inner_join(states, by = c("state" = "abbreviation")) #join states df to count df, specify that the state variable from dn df should be matched by the abbreviation variable from states df
+```
+
+### Exercise 10
+
+
+
+### Exercise 11
 
 
 
 
 
+### Exercise 12
 
 
 
 
 
-
-
-
-
-
-
-
-
+### Exercise 13
 
 
 
